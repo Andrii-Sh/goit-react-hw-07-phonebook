@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux';
-import { addContact } from '../../redux/contactsSlice';
+import { addContact } from '../../redux/operations';
 import { useSelector } from 'react-redux';
 import { getContacts } from '../../redux/selectors';
 import {
@@ -12,18 +12,16 @@ import { Formik } from 'formik';
 
 const initialValues = {
   name: '',
-  number: '',
+  phone: '',
 };
 
 export const ContactForm = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
+  const { items } = useSelector(getContacts);
 
   const handleSubmit = (values, { resetForm }) => {
     if (
-      contacts.find(
-        item => item.name.toLowerCase() === values.name.toLowerCase()
-      )
+      items.find(item => item.name.toLowerCase() === values.name.toLowerCase())
     ) {
       alert(`${values.name} is already in contacts.`);
       return;
@@ -47,12 +45,12 @@ export const ContactForm = () => {
             required
           />
         </Label>
-        <Label htmlFor="number">
+        <Label htmlFor="phone">
           Number
           <Input
             type="tel"
-            name="number"
-            id="number"
+            name="phone"
+            id="phone"
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
             title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
             required
