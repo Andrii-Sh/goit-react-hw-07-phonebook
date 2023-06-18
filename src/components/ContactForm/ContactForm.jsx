@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux';
 import { addContact } from '../../redux/operations';
 import { useSelector } from 'react-redux';
-import { getContacts } from '../../redux/selectors';
+import { selectContacts } from '../../redux/selectors';
 import {
   Label,
   ContactInputForm,
@@ -17,7 +17,7 @@ const initialValues = {
 
 export const ContactForm = () => {
   const dispatch = useDispatch();
-  const { items } = useSelector(getContacts);
+  const { items } = useSelector(selectContacts);
 
   const handleSubmit = (values, { resetForm }) => {
     if (
