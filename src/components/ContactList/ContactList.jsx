@@ -1,40 +1,52 @@
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { getFilter, getContacts } from '../../redux/selectors';
+import { fetchContacts } from '../../redux/operations';
 import { nanoid } from 'nanoid';
 import { Contact } from '../Contact/Contact';
 import { ContactItem } from './ContactList.styled';
 
 export const ContactList = () => {
   const filter = useSelector(getFilter);
-  const contacts = useSelector(getContacts);
+  // const contacts = useSelector(getContacts);
+  const dispatch = useDispatch();
+  const { items, isLoading, error } = useSelector(getContacts);
+
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
 
   const getFiltredContacts = () => {
     const normalizedFilter = filter.toLowerCase();
     if (filter === '') {
-      return contacts;
+      return items;
     }
 
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(normalizedFilter)
+    return items.filter(item =>
+      item.name.toLowerCase().includes(normalizedFilter)
     );
   };
 
   const filtredContacts = getFiltredContacts();
 
   return (
-    <ul>
-      {filtredContacts.map(contact => {
-        const lisiItemtId = nanoid();
-        return (
-          <ContactItem key={lisiItemtId}>
-            <Contact
-              id={contact.id}
-              name={contact.name}
-              number={contact.number}
-            />
-          </ContactItem>
-        );
-      })}
-    </ul>
+    <div>
+      {isLoading && <b>Loading contacts...</b>}
+      {error && <b>{error}</b>}
+      <ul>
+        {filtredContacts.map(contact => {
+          const lisiItemtId = nanoid();
+          return (
+            <ContactItem key={lisiItemtId}>
+              <Contact
+                id={contact.id}
+                name={contact.name}
+                number={contact.number}
+              />
+            </ContactItem>
+          );
+        })}
+      </ul>
+    </div>
   );
 };
